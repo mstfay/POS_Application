@@ -29,7 +29,7 @@ function CartTotals() {
               icon={<PlusCircleOutlined />}
               danger
             />
-            <span className="text-bold">1</span>
+            <span className="font-bold">1</span>
             <Button
               type="primary"
               size="small"
