@@ -8,6 +8,11 @@
   background-color: #1677ff;
 }
 
+.scrollable-page {
+  height: 500px;
+  overflow-y: scroll;
+}
+
 @media (min-width: 768px) {
   body {
     margin: 0;

@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Header from "../components/Header/Header";
 import { Card, Table } from "antd";
 
 const CustomerPage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
   
     const dataSource = [
       {
