@@ -4,6 +4,12 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Neuton&family=Noto+Serif+Hebrew&display=swap');
 
+body {
+  margin: 0;
+  font-family: 'Neuton', serif;
+  font-family: 'Noto Serif Hebrew', serif;
+  background-color: #f7fafc;
+}
 .ant-btn-primary{
   background-color: #1677ff;
 }
@@ -14,10 +20,7 @@
 }
 
 @media (min-width: 768px) {
-  body {
-    margin: 0;
-    font-family: 'Neuton', serif;
-    font-family: 'Noto Serif Hebrew', serif;
+  body{
     overflow: hidden;
   }
   
