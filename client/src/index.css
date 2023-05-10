@@ -4,6 +4,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Neuton&family=Noto+Serif+Hebrew&display=swap');
 
+.ant-btn-primary{
+  background-color: #1677ff;
+}
+
 @media (min-width: 768px) {
   body {
     margin: 0;
