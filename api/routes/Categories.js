@@ -14,6 +14,7 @@ router.get("/get-all", async (request, response) => {
   }
 })
 
+
 // create
 router.post("/add-category", async (request, response) => {
   try {
