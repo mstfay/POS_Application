@@ -43,7 +43,22 @@ const Register = () => {
             <Form.Item
               label="Şifre Tekrar"
               name={"passwordAgain"}
-              rules={[{ required: true, message: "Şifrenizi tekrar giriniz!" }]}
+              dependencies={["password"]}
+              rules={[
+                { required: true, message: "Şifrenizi tekrar giriniz!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "Girilen şifreler eşleşmiyor"
+                      )
+                    );
+                  },
+                }),
+              ]}
             >
               <Input.Password />
             </Form.Item>
@@ -77,17 +92,17 @@ const Register = () => {
                 image="/images/statistic.svg"
                 header="İstatistikler"
                 describe="Geniş Tutulan İstatislikler"
-               />
+              />
               <AuthCarousel
                 image="/images/customer.svg"
                 header="Müşteri Memnuniyeti"
                 describe="Deneyim Sonunda Üründen Memnun Müşteriler"
-               />
+              />
               <AuthCarousel
                 image="/images/admin.svg"
                 header="Yönetici Panali"
                 describe="Tek Yerden Yönetim"
-               />
+              />
             </Carousel>
           </div>
         </div>
