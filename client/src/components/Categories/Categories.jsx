@@ -1,26 +1,12 @@
 import React, { useState } from "react";
+import AddCategory from "./AddCategory";
+import EditCategory from "./EditCategory";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import "./style.css";
-import { Button, Form, Input, Modal, message } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
 
 const Categories = ({ categories, setCategories }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [form] = Form.useForm();
-
-  const onFinish = (values) => {
-    try {
-      fetch("http://localhost:5000/api/categories/add-category", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: { "Content-type": "application/json; chartset=UTF-8" },
-      });
-      message.success("Kategori başarılı bir şekilde eklendi.");
-      form.resetFields();
-      setCategories([...categories, values]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   return (
     <ul className="flex gap-4 md:flex-col text-lg">
@@ -35,27 +21,24 @@ const Categories = ({ categories, setCategories }) => {
       >
         <PlusOutlined className="md:text-2xl" />
       </li>
-      <Modal
-        title="Yeni Kategori Ekle"
-        open={isAddModalOpen}
-        onCancel={() => setIsAddModalOpen(false)}
-        footer={false}
+      <li
+        className="category-item !bg-orange-800 hover:opacity-90"
+        onClick={() => setIsEditModalOpen(true)}
       >
-        <Form layout="vertical" onFinish={onFinish} form={form}>
-          <Form.Item
-            name="title"
-            label="Kategori Ekle"
-            rules={[{ required: true, message: "Kategori adı boş geçilemez!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item className="flex justify-end mb-0">
-            <Button type="primary" htmlType="submit">
-              Oluştur
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+        <EditOutlined className="md:text-2xl" />
+      </li>
+      <AddCategory
+        isAddModalOpen={isAddModalOpen}
+        setIsAddModalOpen={setIsAddModalOpen}
+        categories={categories}
+        setCategories={setCategories}
+      />
+      <EditCategory
+        isEditModalOpen={isEditModalOpen}
+        setIsEditModalOpen={setIsEditModalOpen}
+        categories={categories}
+        setCategories={setCategories}
+      />
     </ul>
   );
 };
