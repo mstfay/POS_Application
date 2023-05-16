@@ -32,8 +32,25 @@ const EditCategory = ({
         })
       );
     } catch (error) {
-      message.success("Bir şeyler yanlış gitti.");
+      message.error("Bir şeyler yanlış gitti.");
       console.log(error);
+    }
+  };
+
+  const deleteCategory = (id) => {
+    if (window.confirm("Kategoriyi silmek istiyor musunuz?")) {
+      try {
+        fetch("http://localhost:5000/api/categories/delete-category", {
+          method: "DELETE",
+          body: JSON.stringify({ categoryId: id }),
+          headers: { "Content-type": "application/json; chartset=UTF-8" },
+        });
+        message.success("Kategori başarılı bir şekilde kaldırıldı.");
+        setCategories(categories.filter((item) => item._id !== id));
+      } catch (error) {
+        message.error("Bir şeyler yanlış gitti.");
+        console.log(error);
+      }
     }
   };
 
@@ -56,16 +73,24 @@ const EditCategory = ({
     {
       title: "Action",
       dataIndex: "action",
-      render: (text, record) => {
+      render: (_, record) => {
         return (
           <div>
-            <Button type="link" className="pl-0" onClick={() => setEditingRow(record)}>
+            <Button
+              type="link"
+              className="pl-0"
+              onClick={() => setEditingRow(record)}
+            >
               Düzenle
             </Button>
             <Button type="link" htmlType="submit" className="text-gray-500">
               Kaydet
             </Button>
-            <Button type="link" danger>
+            <Button
+              type="link"
+              danger
+              onClick={() => deleteCategory(record._id)}
+            >
               Sil
             </Button>
           </div>
