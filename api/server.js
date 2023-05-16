@@ -6,8 +6,8 @@ const cors = require("cors");
 const port = 5000;
 
 // routes
-
 const categoryRoute = require("./routes/Categories.js");
+const productRoute = require("./routes/Products.js");
 
 dotenv.config();
 
@@ -25,8 +25,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/categories", categoryRoute);
-
-app.get(`/`, (request, response) => response.send("Merhaba canım"));
+app.use("/api/products", productRoute);
 
 app.listen(port, () => {
   connect();
