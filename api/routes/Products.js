@@ -10,7 +10,7 @@ router.get("/get-all", async (request, response) => {
     const products = await Product.find();
     response.status(200).json(products)
   } catch (error) {
-    console.log(error);
+    response.status(500).json(error);
   }
 })
 
@@ -22,7 +22,7 @@ router.post("/add-product", async (request, response) => {
     await newProduct.save();
     response.status(200).json("Item added successfully.");
   } catch (error) {
-    response.status(400).json(error);
+    response.status(500).json(error);
   }
 });
 

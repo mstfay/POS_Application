@@ -2,13 +2,26 @@ const User = require("../models/User.js");
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 
-// get all Users
-router.get("/get-all", async (request, response) => {
+// login
+router.post("/login", async (request, response) => {
   try {
-    const users = await User.find();
-    response.status(200).json(users)
+    const user = await User.findOne({ email: request.body.email });
+    !user && response.status(404).send({ error: "User not found!" });
+
+    const validPassword = await bcrypt.compare(
+      request.body.password,
+      user.password
+    );
+
+    if (!validPassword) {
+      response.status(403).json("Şifre doğru değil!");
+    } else {
+      response.status(200).json(user);
+    }
+
+    response.send(user);
   } catch (error) {
-    console.log(error);
+    response.status(500).json(error);
   }
 });
 
@@ -26,7 +39,7 @@ router.post("/register", async (request, response) => {
     await newUser.save();
     response.status(200).json("A new user create successfully.");
   } catch (error) {
-    response.status(400).json(error);
+    response.status(500).json(error);
   }
 });
 
