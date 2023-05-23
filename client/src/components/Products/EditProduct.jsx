@@ -66,16 +66,16 @@ const EditProduct = () => {
     }
   };
 
-  const deleteCategory = (id) => {
-    if (window.confirm("Kategoriyi silmek istiyor musunuz?")) {
+  const deleteProduct = (id) => {
+    if (window.confirm("Ürünü silmek istiyor musunuz?")) {
       try {
-        fetch("http://localhost:5000/api/categories/delete-category", {
+        fetch("http://localhost:5000/api/products/delete-product", {
           method: "DELETE",
-          body: JSON.stringify({ categoryId: id }),
+          body: JSON.stringify({ productId: id }),
           headers: { "Content-type": "application/json; chartset=UTF-8" },
         });
-        message.success("Kategori başarılı bir şekilde kaldırıldı.");
-        setCategories(categories.filter((item) => item._id !== id));
+        message.success("Ürün başarılı bir şekilde kaldırıldı.");
+        setProducts(products.filter((item) => item._id !== id));
       } catch (error) {
         message.error("Bir şeyler yanlış gitti.");
         console.log(error);
@@ -132,7 +132,7 @@ const EditProduct = () => {
             <Button
               type="link"
               danger
-              onClick={() => deleteCategory(record._id)}
+              onClick={() => deleteProduct(record._id)}
             >
               Sil
             </Button>
