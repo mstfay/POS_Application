@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Table, Button, Input, message } from "antd";
+import { Modal, Form, Table, Button, Input, message, Select } from "antd";
 
-const EditProduct = ({
-  isEditModalOpen,
-  setIsEditModalOpen,
-  categories,
-  setCategories,
-}) => {
+const EditProduct = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState([]);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     const getProducts = async () => {
@@ -24,18 +23,41 @@ const EditProduct = ({
     getProducts();
   }, []);
 
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/categories/get-all"
+        );
+        const data = await response.json();
+        data &&
+          setCategories(
+            data.map((item) => {
+              return { ...item, value: item.title };
+            })
+          );
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getCategories();
+  }, []);
+
   const onFinish = (values) => {
-    console.log(values);
     try {
-      fetch("http://localhost:5000/api/categories/update-category", {
+      fetch("http://localhost:5000/api/products/update-product", {
         method: "PUT",
-        body: JSON.stringify({ ...values }),
+        body: JSON.stringify({ ...values, productId: editingItem._id }),
         headers: { "Content-type": "application/json; charset=UTF-8" },
       });
-      message.success("Kategori başarılı bir şekilde güncellendi.");
-      setCategories(
-        categories.map((item) => {
-          return item;
+      message.success("Ürün başarılı bir şekilde güncellendi.");
+      setProducts(
+        products.map((item) => {
+          if (item._id === editingItem._id) {
+            return values;
+          } else {
+            return item;
+          }
         })
       );
     } catch (error) {
@@ -97,11 +119,15 @@ const EditProduct = ({
       render: (_, record) => {
         return (
           <div>
-            <Button type="link" className="pl-0">
+            <Button
+              type="link"
+              className="pl-0"
+              onClick={() => {
+                setIsEditModalOpen(true);
+                setEditingItem(record);
+              }}
+            >
               Düzenle
-            </Button>
-            <Button type="link" htmlType="submit" className="text-gray-500">
-              Kaydet
             </Button>
             <Button
               type="link"
@@ -117,7 +143,7 @@ const EditProduct = ({
   ];
 
   return (
-    <Form onFinish={onFinish}>
+    <React.Fragment>
       <Table
         bordered
         dataSource={products}
@@ -125,7 +151,69 @@ const EditProduct = ({
         rowKey={"_id"}
         scroll={{ x: 1000, y: 600 }}
       />
-    </Form>
+      <Modal
+        title="Yeni Ürün Ekle"
+        open={isEditModalOpen}
+        onCancel={() => setIsEditModalOpen(false)}
+        footer={false}
+      >
+        <Form
+          layout="vertical"
+          onFinish={onFinish}
+          form={form}
+          initialValues={editingItem}
+        >
+          <Form.Item
+            name="title"
+            label="Ürün Adı"
+            rules={[{ required: true, message: "Ürün adı boş geçilemez!" }]}
+          >
+            <Input placeholder="Ürün adı giriniz." />
+          </Form.Item>
+          <Form.Item
+            name="image"
+            label="Ürün Görseli"
+            rules={[{ required: true, message: "Ürün görseli boş geçilemez!" }]}
+          >
+            <Input placeholder="Ürün görseli giriniz." />
+          </Form.Item>
+          <Form.Item
+            name="price"
+            label="Ürün Fiyatı"
+            rules={[{ required: true, message: "Ürün fiyatı boş geçilemez!" }]}
+          >
+            <Input placeholder="Ürün fiyatı giriniz." />
+          </Form.Item>
+          <Form.Item
+            name="category"
+            label="Kategori Seç"
+            rules={[
+              { required: true, message: "Ürün kategorisi boş geçilemez!" },
+            ]}
+          >
+            <Select
+              showSearch
+              placeholder="Ürün kategorisi giriniz."
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.title ?? "").includes(input)
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.title ?? "")
+                  .toLowerCase()
+                  .localeCompare((optionB?.title ?? "").toLowerCase())
+              }
+              options={categories}
+            />
+          </Form.Item>
+          <Form.Item className="flex justify-end mb-0">
+            <Button type="primary" htmlType="submit">
+              Güncelle
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </React.Fragment>
   );
 };
 
