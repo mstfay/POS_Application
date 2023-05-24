@@ -5,10 +5,12 @@ import {
   PlusCircleOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCart } from "../../redux/CartSlice";
 
 function CartTotals() {
   const { cartItems } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
 
   return (
     <div className="cart h-full max-h-[calc(100vh_-_90px)] flex flex-col">
@@ -19,7 +21,12 @@ function CartTotals() {
         {cartItems.map((item) => (
           <li className="cart-item flex justify-between" key={item._id}>
             <div className="flex items-center">
-              <img src={item.image} alt="" className="w-16 h-16 object-cover" />
+              <img
+                src={item.image}
+                alt=""
+                className="w-16 h-16 object-cover hover:shadow-lg cursor-pointer"
+                onClick={() => dispatch(deleteCart(item))}
+              />
               <div className="flex flex-col ml-2">
                 <b>{item.title}</b>
                 <span>
