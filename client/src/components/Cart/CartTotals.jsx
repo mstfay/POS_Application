@@ -27,8 +27,10 @@ function CartTotals() {
                     alt=""
                     className="w-16 h-16 object-cover hover:shadow-lg cursor-pointer"
                     onClick={() => {
-                      dispatch(deleteCart(item));
-                      message.success("Ürün sepetten kaldırıldı.");
+                      if (window.confirm(item.title + " ürünü sepetinizden kaldırılsın mı?")) {
+                        dispatch(deleteCart(item));
+                        message.success("Ürün sepetten kaldırıldı.");
+                      }
                     }}
                   />
                   <div className="flex flex-col ml-2">
