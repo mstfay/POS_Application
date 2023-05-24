@@ -21,68 +21,74 @@ function CartTotals() {
       </h2>
       <ul className="cart-items px-2 flex flex-col gap-y-3 py-2 overflow-y-auto">
         {cart.cartItems.length > 0
-          ? cart.cartItems.map((item) => (
-              <li className="cart-item flex justify-between" key={item._id}>
-                <div className="flex items-center">
-                  <img
-                    src={item.image}
-                    alt=""
-                    className="w-16 h-16 object-cover hover:shadow-lg cursor-pointer"
-                    onClick={() => {
-                      if (window.confirm(item.title + " ürünü sepetinizden kaldırılsın mı?")) {
-                        dispatch(deleteCart(item));
-                        message.success("Ürün sepetten kaldırıldı.");
-                      }
-                    }}
-                  />
-                  <div className="flex flex-col ml-2">
-                    <b>{item.title}</b>
-                    <span>
-                      {item.price}₺ x {item.quantity}
-                    </span>
+          ? cart.cartItems
+              .map((item) => (
+                <li className="cart-item flex justify-between" key={item._id}>
+                  <div className="flex items-center">
+                    <img
+                      src={item.image}
+                      alt=""
+                      className="w-16 h-16 object-cover hover:shadow-lg cursor-pointer"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            item.title + " ürünü sepetinizden kaldırılsın mı?"
+                          )
+                        ) {
+                          dispatch(deleteCart(item));
+                          message.success("Ürün sepetten kaldırıldı.");
+                        }
+                      }}
+                    />
+                    <div className="flex flex-col ml-2">
+                      <b>{item.title}</b>
+                      <span>
+                        {item.price}₺ x {item.quantity}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center">
-                  <Button
-                    type="primary"
-                    size="small"
-                    className="w-full flex items-center justify-center !rounded-full"
-                    icon={
-                      <PlusCircleOutlined
-                        onClick={() => dispatch(increase(item))}
-                      />
-                    }
-                    danger
-                  />
-                  <span className="font-bold w-6 inline-block text-center">
-                    {item.quantity}
-                  </span>
-                  <Button
-                    type="primary"
-                    size="small"
-                    className="w-full flex items-center justify-center !rounded-full"
-                    icon={
-                      <MinusCircleOutlined
-                        onClick={() => {
-                          if (item.quantity === 1) {
-                            if (
-                              window.confirm("Ürün sepetinizden silinsin mi?")
-                            ) {
-                              dispatch(decrease(item));
-                              message.success("Ürün sepetten kaldırıldı.");
+                  <div className="flex items-center">
+                    <Button
+                      type="primary"
+                      size="small"
+                      className="w-full flex items-center justify-center !rounded-full"
+                      icon={
+                        <PlusCircleOutlined
+                          onClick={() => dispatch(increase(item))}
+                        />
+                      }
+                      danger
+                    />
+                    <span className="font-bold w-6 inline-block text-center">
+                      {item.quantity}
+                    </span>
+                    <Button
+                      type="primary"
+                      size="small"
+                      className="w-full flex items-center justify-center !rounded-full"
+                      icon={
+                        <MinusCircleOutlined
+                          onClick={() => {
+                            if (item.quantity === 1) {
+                              if (
+                                window.confirm("Ürün sepetinizden silinsin mi?")
+                              ) {
+                                dispatch(decrease(item));
+                                message.success("Ürün sepetten kaldırıldı.");
+                              }
                             }
-                          }
-                          if (item.quantity > 1) {
-                            dispatch(decrease(item));
-                          }
-                        }}
-                      />
-                    }
-                    danger
-                  />
-                </div>
-              </li>
-            ))
+                            if (item.quantity > 1) {
+                              dispatch(decrease(item));
+                            }
+                          }}
+                        />
+                      }
+                      danger
+                    />
+                  </div>
+                </li>
+              ))
+              .reverse()
           : "Sepette hiç ürün yok..."}
       </ul>
       <div className="cart-totals mt-auto">

@@ -5,7 +5,8 @@ import { Button, Table } from "antd";
 
 const BillPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [billItems, setBillItems] = useState();
+  const [billItems, setBillItems] = useState([]);
+  const [customer, setCustomer] = useState();
 
   useEffect(() => {
     const getBills = async () => {
@@ -63,8 +64,19 @@ const BillPage = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: (item) => {
-        return <Button type="link" className="pl-0" onClick={() => setIsModalOpen(true)}>Yazdır</Button>;
+      render: (_, record) => {
+        return (
+          <Button
+            type="link"
+            className="pl-0"
+            onClick={() => {
+              setIsModalOpen(true);
+              setCustomer(record);
+            }}
+          >
+            Yazdır
+          </Button>
+        );
       },
     },
   ];
@@ -82,7 +94,11 @@ const BillPage = () => {
           scroll={{ x: 1000, y: 400 }}
         />
       </div>
-      <PrintBill isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <PrintBill
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        customer={customer}
+      />
     </React.Fragment>
   );
 };
