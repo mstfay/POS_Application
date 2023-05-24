@@ -3,8 +3,13 @@ import Header from "../components/Header/Header";
 import CreateBill from "../components/Cart/CreateBill";
 import { Button, Card, Popconfirm, Table, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
+import {
+  PlusCircleOutlined,
+  MinusCircleOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 import { increase, decrease, deleteCart } from "../redux/CartSlice";
+import "../index.css";
 
 function CartPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,6 +102,7 @@ function CartPage() {
             title={`${record.title} ürününü sepetinizden kaldırmak istediğinize emin misiniz?`}
             okText="Evet"
             cancelText="Hayır"
+            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
             onConfirm={() => {
               dispatch(deleteCart(record));
               message.success(record.title + " ürünü sepetinizden kaldırıldı.");
@@ -114,32 +120,43 @@ function CartPage() {
   return (
     <React.Fragment>
       <Header />
-      <div className="px-6">
+      <div className="px-6 scrollable-page">
         <Table
           dataSource={cart.cartItems}
           columns={columns}
           bordered
-          pagination={false}
+          scroll={{ x: 1200, y: 300 }}
         />
         <div className="cart-total flex justify-end mt-4">
           <Card className="w-72">
             <div className="flex justify-between">
               <span>Ara Toplam</span>
-              <span>549.00₺</span>
+              <span>{cart.total > 0 ? cart.total.toFixed(2) : 0}₺</span>
             </div>
             <div className="flex justify-between text-red-600 my-2">
-              <span>KDV Toplam %8</span>
-              <span>+43.92₺</span>
+              <span>KDV %{cart.tax}</span>
+              <span>
+                {(cart.total * cart.tax) / 100 > 0
+                  ? "+" + ((cart.total * cart.tax) / 100).toFixed(2)
+                  : 0}
+                ₺
+              </span>
             </div>
             <div className="flex justify-between font-bold">
-              <span>Toplam</span>
-              <span>592.92₺</span>
+              <span>Genel Toplam</span>
+              <span>
+                {cart.total + (cart.total * cart.tax) / 100 > 0
+                  ? (cart.total + (cart.total * cart.tax) / 100).toFixed(2)
+                  : 0}
+                ₺
+              </span>
             </div>
             <Button
               type="primary"
               size="large"
               className="mt-4 w-full bg-blue-500"
               onClick={() => setIsModalOpen(true)}
+              disabled={cart.cartItems.length === 0}
             >
               Sipariş Oluştur
             </Button>
