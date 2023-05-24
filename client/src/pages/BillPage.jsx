@@ -1,41 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header/Header";
 import PrintBill from "../components/Bills/PrintBill";
-import { Button, Card, Table } from "antd";
+import { Button, Table } from "antd";
 
 const BillPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [billItems, setBillItems] = useState();
 
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
+  useEffect(() => {
+    const getBills = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/bills/get-all");
+        const data = await response.json();
+        setBillItems(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getBills();
+  }, []);
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Müşteri Adı",
+      dataIndex: "customerName",
+      key: "customerName",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Telefon Numarası",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Oluşturma Tarihi",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (text) => {
+        const date = new Date(text);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // JavaScript ayları 0'dan başlayarak sayar, bu yüzden 1 eklenir.
+        const year = date.getFullYear();
+
+        const formattedDate = `${year}-${month}-${day}`;
+
+        return <span>{formattedDate}</span>;
+      },
+    },
+    {
+      title: "Ödeme Yöntemi",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
+    },
+    {
+      title: "Toplam Fiyat",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+      render: (text) => {
+        return <span>{text.toFixed(2)}₺</span>;
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      render: (item) => {
+        return <Button type="link" className="pl-0" onClick={() => setIsModalOpen(true)}>Yazdır</Button>;
+      },
     },
   ];
 
@@ -45,23 +75,12 @@ const BillPage = () => {
       <div className="px-6">
         <h1 className="text-4xl font-bold text-center mb-4">Faturalar</h1>
         <Table
-          dataSource={dataSource}
+          dataSource={billItems}
           columns={columns}
           bordered
           pagination={false}
+          scroll={{ x: 1000, y: 400 }}
         />
-        <div className="cart-total flex justify-end mt-4">
-          <Card className="w-72">
-            <Button
-              type="primary"
-              size="large"
-              className="mt-4 w-full bg-blue-500"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Yazdır
-            </Button>
-          </Card>
-        </div>
       </div>
       <PrintBill isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </React.Fragment>
