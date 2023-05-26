@@ -2,16 +2,20 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header/Header";
 import StatisticCard from "../components/Statistics/StatisticCard";
 import { Area, Pie } from "@ant-design/plots";
+import { Spin } from "antd";
 
 const StatisticPage = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
   const [products, setProducts] = useState([]);
+  const user = JSON.parse(localStorage.getItem("posUser"));
+
+  console.log(user);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/products/get-all"
+          process.env.REACT_APP_SERVER_URL + "/api/products/get-all"
         );
         const data = await response.json();
         setProducts(data);
@@ -27,7 +31,7 @@ const StatisticPage = () => {
   }, []);
 
   const asyncFetch = () => {
-    fetch("http://localhost:5000/api/bills/get-all")
+    fetch(process.env.REACT_APP_SERVER_URL + "/api/bills/get-all")
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => {
@@ -44,7 +48,7 @@ const StatisticPage = () => {
     },
     tooltip: {
       formatter: (datum) => {
-        return { name: 'Toplam', value: `${datum.subTotal.toFixed(2)}₺` };
+        return { name: "Toplam", value: `${datum.subTotal.toFixed(2)}₺` };
       },
     },
   };
@@ -94,45 +98,54 @@ const StatisticPage = () => {
   return (
     <React.Fragment>
       <Header />
-      <div className="px-6 md:pb-0 pb-20">
-        <h1 className="text-4xl font-bold text-center mb-4">İstatisliklerim</h1>
-        <div className="statistic-section">
-          <h2 className="text-lg">
-            Hoş geldin{" "}
-            <span className="text-green-700 font-bold text-xl">admin</span>
-          </h2>
-          <div className="statistic-cards grid xl:grid-cols-4 md:grid-cols-2 my-10 md:gap-10 gap-4">
-            <StatisticCard
-              title={"Toplam Müşteri"}
-              amount={data?.length}
-              image={"images/user.png"}
-            />
-            <StatisticCard
-              title={"Toplam Kazanç"}
-              amount={`${totalAmount()}₺`}
-              image={"images/money.png"}
-            />
-            <StatisticCard
-              title={"Toplam Satış"}
-              amount={data?.length}
-              image={"images/sale.png"}
-            />
-            <StatisticCard
-              title={"Toplam Ürün"}
-              amount={products?.length}
-              image={"images/product.png"}
-            />
-          </div>
-          <div className="flex justify-between gap-10 lg:flex-row flex-col items-center">
-            <div className="lg:w-1/2 lg:h-full h-72">
-              <Area {...configArea} />
+      <h1 className="text-4xl font-bold text-center mb-4">İstatisliklerim</h1>
+      {data ? (
+        <div className="px-6 md:pb-0 pb-20">
+          <div className="statistic-section">
+            <h2 className="text-lg">
+              Hoş geldin{" "}
+              <span className="text-green-700 font-bold text-xl">
+                {user.username}
+              </span>
+            </h2>
+            <div className="statistic-cards grid xl:grid-cols-4 md:grid-cols-2 my-10 md:gap-10 gap-4">
+              <StatisticCard
+                title={"Toplam Müşteri"}
+                amount={data?.length}
+                image={"images/user.png"}
+              />
+              <StatisticCard
+                title={"Toplam Kazanç"}
+                amount={`${totalAmount()}₺`}
+                image={"images/money.png"}
+              />
+              <StatisticCard
+                title={"Toplam Satış"}
+                amount={data?.length}
+                image={"images/sale.png"}
+              />
+              <StatisticCard
+                title={"Toplam Ürün"}
+                amount={products?.length}
+                image={"images/product.png"}
+              />
             </div>
-            <div className="lg:w-1/2 lg:h-full h-72">
-              <Pie {...configDonut} />
+            <div className="flex justify-between gap-10 lg:flex-row flex-col items-center">
+              <div className="lg:w-1/2 lg:h-full h-72">
+                <Area {...configArea} />
+              </div>
+              <div className="lg:w-1/2 lg:h-full h-72">
+                <Pie {...configDonut} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <Spin
+          size="large"
+          className="absolute top-1/2 h-screen w-screen flex justify-center"
+        />
+      )}
     </React.Fragment>
   );
 };

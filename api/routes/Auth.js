@@ -6,7 +6,9 @@ const bcrypt = require("bcrypt");
 router.post("/login", async (request, response) => {
   try {
     const user = await User.findOne({ email: request.body.email });
-    !user && response.status(404).send({ error: "User not found!" });
+    if (!user) {
+      return response.status(404).send({ error: "User not found!" });
+    }
 
     const validPassword = await bcrypt.compare(
       request.body.password,
@@ -18,8 +20,6 @@ router.post("/login", async (request, response) => {
     } else {
       response.status(200).json(user);
     }
-
-    response.send(user);
   } catch (error) {
     response.status(500).json(error);
   }

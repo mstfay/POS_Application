@@ -1,15 +1,37 @@
-import React from "react";
-import { Form, Input, Button, Carousel } from "antd";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Form, Input, Button, Carousel, message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import AuthCarousel from "../../components/auth/AuthCarousel";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const onFinish = async (values) => {
+    setLoading(true);
+    try {
+      const response = await fetch(process.env.REACT_APP_SERVER_URL + "/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: { "Content-type": "application/json; chartset=UTF-8" },
+      });
+      if (response.status === 200) {
+        message.success("Kayıt işlemi başarılı.");
+        navigate("/login");
+        setLoading(false);
+      }
+    } catch (error) {
+      message.error("Bir şeyler yanlış gitti.");
+      console.log(error);
+    }
+  };
+
   return (
     <div className="h-screen">
       <div className="flex justify-between h-full">
         <div className="xl:px-20 px-10 w-full flex flex-col h-full justify-center relative">
           <h1 className="text-center text-5xl font-bold mb-2">LOGO</h1>
-          <Form layout="vertical">
+          <Form layout="vertical" onFinish={onFinish}>
             <Form.Item
               label="Kullanıcı Adı"
               name={"username"}
@@ -52,9 +74,7 @@ const Register = () => {
                       return Promise.resolve();
                     }
                     return Promise.reject(
-                      new Error(
-                        "Girilen şifreler eşleşmiyor"
-                      )
+                      new Error("Girilen şifreler eşleşmiyor")
                     );
                   },
                 }),
@@ -68,6 +88,7 @@ const Register = () => {
                 htmlType="submit"
                 className="w-full"
                 size="lg"
+                loading={loading}
               >
                 Kaydol
               </Button>

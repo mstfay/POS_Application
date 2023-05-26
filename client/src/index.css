@@ -2,19 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Neuton&family=Noto+Serif+Hebrew&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Neuton&family=Noto+Serif+Hebrew&display=swap");
 
 body {
   margin: 0;
-  font-family: 'Neuton', serif;
-  font-family: 'Noto Serif Hebrew', serif;
+  font-family: "Neuton", serif;
+  font-family: "Noto Serif Hebrew", serif;
   background-color: #f7fafc;
 }
-.ant-btn-primary{
+.ant-btn-primary {
   background-color: #1677ff;
 }
 
-.menu-link .anticon{
+.menu-link .anticon {
   display: flex;
   justify-content: center;
 }
@@ -25,11 +25,15 @@ body {
 }
 
 @media (min-width: 768px) {
-  body{
+  body {
     overflow: hidden;
   }
-  
-  .categories::-webkit-scrollbar{
+
+  .categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  .products::-webkit-scrollbar {
     display: none;
   }
 }

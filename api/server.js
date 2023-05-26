@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const app = express();
 const cors = require("cors");
+const logger = require("morgan");
 const port = 5000;
 
 // routes
@@ -24,6 +25,7 @@ const connect = async () => {
 };
 
 // middlewares
+app.use(logger("dev"));
 app.use(express.json());
 app.use(cors());
 
@@ -37,4 +39,3 @@ app.listen(port, () => {
   connect();
   console.log(`Example app listening on port ${port}`);
 });
-
