@@ -4,16 +4,30 @@ import StatisticCard from "../components/Statistics/StatisticCard";
 import { Area, Pie } from "@ant-design/plots";
 
 const StatisticPage = () => {
-  const [dataArea, setData] = useState([]);
+  const [data, setData] = useState([]);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/products/get-all"
+        );
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getProducts();
+  }, []);
 
   useEffect(() => {
     asyncFetch();
   }, []);
 
   const asyncFetch = () => {
-    fetch(
-      "https://gw.alipayobjects.com/os/bmw-prod/360c3eae-0c73-46f0-a982-4746a6095010.json"
-    )
+    fetch("http://localhost:5000/api/bills/get-all")
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => {
@@ -22,46 +36,24 @@ const StatisticPage = () => {
   };
 
   const configArea = {
-    data: dataArea,
-    xField: "timePeriod",
-    yField: "value",
+    data: data,
+    xField: "customerName",
+    yField: "subTotal",
     xAxis: {
       range: [0, 1],
     },
+    tooltip: {
+      formatter: (datum) => {
+        return { name: 'Toplam', value: `${datum.subTotal.toFixed(2)}₺` };
+      },
+    },
   };
-
-  const dataDonut = [
-    {
-      type: "分类一",
-      value: 27,
-    },
-    {
-      type: "分类二",
-      value: 25,
-    },
-    {
-      type: "分类三",
-      value: 18,
-    },
-    {
-      type: "分类四",
-      value: 15,
-    },
-    {
-      type: "分类五",
-      value: 10,
-    },
-    {
-      type: "其他",
-      value: 5,
-    },
-  ];
 
   const configDonut = {
     appendPadding: 10,
-    data: dataDonut,
-    angleField: "value",
-    colorField: "type",
+    data,
+    angleField: "subTotal",
+    colorField: "customerName",
     radius: 1,
     innerRadius: 0.6,
     label: {
@@ -89,9 +81,14 @@ const StatisticPage = () => {
           overflow: "hidden",
           textOverflow: "ellipsis",
         },
-        content: "AntV\nG2Plot",
+        content: "Toplam\nDeğer",
       },
     },
+  };
+
+  const totalAmount = () => {
+    const amount = data.reduce((total, item) => item.totalAmount + total, 0);
+    return amount.toFixed(2);
   };
 
   return (
@@ -107,22 +104,22 @@ const StatisticPage = () => {
           <div className="statistic-cards grid xl:grid-cols-4 md:grid-cols-2 my-10 md:gap-10 gap-4">
             <StatisticCard
               title={"Toplam Müşteri"}
-              amount={"10"}
+              amount={data?.length}
               image={"images/user.png"}
             />
             <StatisticCard
               title={"Toplam Kazanç"}
-              amount={"660.96 ₺"}
+              amount={`${totalAmount()}₺`}
               image={"images/money.png"}
             />
             <StatisticCard
               title={"Toplam Satış"}
-              amount={"6"}
+              amount={data?.length}
               image={"images/sale.png"}
             />
             <StatisticCard
               title={"Toplam Ürün"}
-              amount={"28"}
+              amount={products?.length}
               image={"images/product.png"}
             />
           </div>

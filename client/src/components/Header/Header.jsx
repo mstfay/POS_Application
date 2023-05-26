@@ -53,7 +53,7 @@ const Header = () => {
           </Link>
           <Link to="/customers" className="menu-link">
             <UserOutlined className="md:text-2xl text-xl" />
-            <span className="md:text-cs text-[10px]">Profil</span>
+            <span className="md:text-cs text-[10px]">Müşteriler</span>
           </Link>
           <Link to="/statistic" className="menu-link">
             <BarChartOutlined className="md:text-2xl text-xl" />

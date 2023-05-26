@@ -120,7 +120,7 @@ function CartPage() {
   return (
     <React.Fragment>
       <Header />
-      <div className="px-6 scrollable-page">
+      <div className="scrollable" style={{ maxHeight: 'calc(100vh - 100px)', overflowY: 'scroll' }}>
         <Table
           dataSource={cart.cartItems}
           columns={columns}
